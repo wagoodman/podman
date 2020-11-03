@@ -79,9 +79,11 @@ func scan(cmd *cobra.Command, args []string) error {
 		errs utils.OutputErrors
 	)
 
-	if len(args) != 2 {
+	if len(args) != 1 {
 		// TODO: find right error type
-		return fmt.Errorf("requires exactly one image")
+		return fmt.Errorf("requires exactly one image, given %+v", args)
+	} else {
+		image = args[0]
 	}
 
 	presenterOption := presenter.ParseOption(scanOptions.Output)
@@ -105,7 +107,7 @@ func scan(cmd *cobra.Command, args []string) error {
 		failOnSeverity = &sev
 	}
 
-	file, err := ioutil.TempFile("dir", "prefix")
+	file, err := ioutil.TempFile("", "podman-grype-scan")
 	if err != nil {
 		// TODO: find the right error type for this
 		return err
@@ -116,7 +118,7 @@ func scan(cmd *cobra.Command, args []string) error {
 		Output:            file.Name(),
 	}
 
-	err = registry.ImageEngine().Save(context.Background(), args[0], []string{image}, ephemeralSaveOpts)
+	err = registry.ImageEngine().Save(context.Background(), image, []string{}, ephemeralSaveOpts)
 	if err != nil {
 		errs = append(errs, err)
 	}
