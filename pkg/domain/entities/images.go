@@ -376,3 +376,10 @@ type ImageUnmountReport struct {
 	Err error
 	Id  string // nolint
 }
+
+type ImageScanOptions struct {
+	Scope string
+	Output string
+	FailOn string
+	// TODO: disable DB auto update
+}
